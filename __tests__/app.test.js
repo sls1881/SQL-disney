@@ -98,6 +98,8 @@ describe('app routes', () => {
 
       expect(data.body).toEqual(expectation);
     });
+
+    //Test for single character by ID
     test('return a single id', async () => {
 
       const expectation = {
@@ -125,6 +127,105 @@ describe('app routes', () => {
 
       expect(nothing.body).toEqual('');
     });
+
+    //Test for post
+    test('Create a new character and adds it to our data', async () => {
+
+      const newCharacter = {
+        id: 7,
+        character_name: 'Snow White',
+        created: 1937,
+        wears_clothes: true,
+        species: 'human',
+        url: 'http://thecriticalreel.com/wp-content/uploads/2019/01/FEATURE-IMAGE-gm-snow-white.jpg',
+      };
+
+      const expectationChar = {
+        ...newCharacter,
+        id: 7,
+        owner_id: 1,
+      };
+
+      const data = await fakeRequest(app)
+        .post('/characters')
+        .send(newCharacter)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectationChar);
+
+
+      const allCharacters = await fakeRequest(app)
+        .get('/characters')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const snowWhite = allCharacters.body.find(character => character.character_name === 'Snow White');
+
+      expect(snowWhite).toEqual(expectationChar);
+    });
+
+    //Test for delete
+    test('Delete a single character by id', async () => {
+
+      const expectation = {
+        id: 2,
+        character_name: 'Minnie Mouse',
+        created: 1928,
+        wears_clothes: true,
+        species: 'mouse',
+        url: 'https://d23.com/app/uploads/2013/04/1180w-600h_minnie-mouse_1.jpg',
+        owner_id: 1
+      };
+
+      const data = await fakeRequest(app)
+        .delete('/characters/2')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(data.body).toEqual(expectation);
+
+
+      const nothing = await fakeRequest(app)
+        .get('/characters/2')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(nothing.body).toEqual('');
+    });
+
+    //Test for update/put
+    test('Update a single character data by ID', async () => {
+
+      const newChar = {
+        character_name: 'Minnie Mouse',
+        created: 1930,
+        wears_clothes: true,
+        species: 'mouse',
+        url: 'https://d23.com/app/uploads/2013/04/1180w-600h_minnie-mouse_1.jpg',
+      };
+
+      const expectedChar = {
+        ...newChar,
+        id: 1,
+        owner_id: 1,
+      };
+
+      await fakeRequest(app)
+        .put('/characters/1')
+        .send(newChar)
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      const updatedChar = await fakeRequest(app)
+        .get('/characters/1')
+        .expect('Content-Type', /json/)
+        .expect(200);
+
+      expect(updatedChar.body).toEqual(expectedChar);
+    });
+
+
   });
 });
 
