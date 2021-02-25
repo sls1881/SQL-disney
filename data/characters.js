@@ -30,9 +30,9 @@ const characters = [
   {
     character_name: 'Pluto',
     created: 1930,
-    wears_clothes: true,
+    wears_clothes: false,
     species_id: '3',
-    url: 'https://static.wikia.nocookie.net/tvdinners/images/3/35/Pluto.png/revision/latest?cb=20180528194113',
+    url: 'http://astrologynewsservice.com/wp-content/uploads/2014/08/1240.png',
   },
   {
     character_name: 'Goofy',
